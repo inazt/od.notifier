@@ -1,0 +1,54 @@
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>
+  /*
+    Displays a notification with the current time. Requires "notifications"
+    permission in the manifest file (or calling
+    "webkitNotifications.requestPermission" beforehand).
+  */
+  var time,hour,period;
+  function show() {
+    var notification = webkitNotifications.createNotification(
+      '48.png',                      // The image.
+      hour + time[2] + ' ' + period, // The title.
+      'ลงเวลาด้วยนะจ๊ะ ที่รัก!!'      // The body.
+    );
+    notification.show();
+  }
+  var selectiveShow = function() {
+    if(period=='p.m.' && hour >= 5  && time[2].substr(1) >= 50 ) {
+      show(); 
+    }
+  }
+  // Conditionally initialize the options.
+  if (!localStorage.isInitialized) {
+    localStorage.isActivated = true;   // The display activation.
+    localStorage.frequency = 1;        // The display frequency, in minutes.
+    localStorage.isInitialized = true; // The option initialization.
+  }
+
+  // Test for notification support.
+  if (webkitNotifications) {
+    // While activated, show notifications at the display frequency.
+    if(JSON.parse(localStorage.isActivated)) { 
+      selectiveShow();
+    }
+    
+    var interval = 0; // The display interval, in minutes.
+    setInterval(function() {
+      interval++;
+      if (
+        JSON.parse(localStorage.isActivated) &&
+          localStorage.frequency <= interval
+      ) {
+        selectiveShow();
+        interval = 0;
+      }
+    }, 60000);
+  } else {
+    // Show a new tab with an error message.
+    chrome.tabs.create({url: 'error.html'});
+  }
+</script>
+</head><body></body></html>
