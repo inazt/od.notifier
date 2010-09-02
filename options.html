@@ -1,1 +1,234 @@
-Hello, Options
+<!--
+  An option page for configuring notifications.
+
+  Copyright 2010 the Chromium Authors
+
+  Use of this source code is governed by a BSD-style license that can be found
+  in the "LICENSE" file.
+
+  Brian Kennish <bkennish@chromium.org>
+-->
+<title>Notification Demo</title>
+<style>
+  /* Clone the look and feel of "chrome://" pages. */
+  body {
+    margin: 10px;
+    font: 84% Arial, sans-serif
+  }
+
+  h1 { font-size: 156% }
+
+  h1 img {
+    margin: 1px 5px 0 1px;
+    vertical-align: middle
+  }
+
+  h2 {
+    border-top: 1px solid #9cc2ef;
+    background-color: #ebeff9;
+    padding: 3px 5px;
+    font-size: 100%
+  }
+</style>
+<script src="jquery-1.4.2.min.js"></script>
+<script>
+  /*
+    Grays out or [whatever the opposite of graying out is called] the option
+    field.
+  */
+  function ghost(isDeactivated) {
+    options.style.color = isDeactivated ? 'graytext' : 'black';
+                                                // The label color.
+    options.frequency.disabled = isDeactivated; // The control manipulability.
+  }
+
+  onload = function() {
+    // Initialize the option controls.
+    options.isActivated.checked = JSON.parse(localStorage.isActivated);
+                                           // The display activation.
+    options.frequency.value = localStorage.frequency;
+                                           // The display frequency, in minutes.
+    options['start-hour'].value = localStorage['start-hour'];                                           
+    options['end-hour'].value = localStorage['end-hour'];      
+
+    options['start-minute'].value = localStorage['start-minute'];                                           
+    options['end-minute'].value = localStorage['end-minute'];      
+    options.period.value = localStorage['period'];
+
+    if (!options.isActivated.checked) { ghost(true); }
+
+    // Set the display activation and frequency.
+    options.isActivated.onchange = function() {
+      localStorage.isActivated = options.isActivated.checked;
+      ghost(!options.isActivated.checked);
+    };
+
+    options.frequency.onchange = function() {
+      var status = $('#status')
+      status.html('Frequency saved')
+      localStorage.frequency = options.frequency.value;
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    };
+    
+    jQuery('#period-end').attr('disabled', true)
+    
+    jQuery('#period').change(function() {
+      var status = $('#status')
+      status.html('Period of time saved')
+      localStorage['period'] = options.period.value  
+      options['period-end'].selectedIndex = options.period.selectedIndex  
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    })
+    
+    jQuery('#start-hour').change(function(){
+      var status = $('#status')
+      status.html('Start time Saved')
+      options['end-hour'].selectedIndex = options['start-hour'].selectedIndex  
+      localStorage['start-hour'] = options['start-hour'].value;
+      localStorage['end-hour'] = options['end-hour'].value;      
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    })
+    jQuery('#end-hour').change(function(){
+      var status = $('#status')
+      if(options['end-hour'].value<=options['start-hour'].value) {
+        status.html('End time Saved')
+        localStorage['end-hour'] = options['end-hour'].value
+      }
+      else {
+        options['end-hour'].value = options['start-hour'].value
+        status.html('I can\'t do that !')
+      }        
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    })    
+    jQuery('#end-minute').change(function(){
+      var status = $('#status')
+      status.html('End time Saved')
+      localStorage['end-minute'] = options['end-minute'].value;          
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    })
+    jQuery('#start-minute').change(function(){
+      var status = $('#status')
+      if(options['start-hour'].value==options['end-hour'].value && options['end-minute'].value > options['start-minute'].value  ) {
+        options['end-minute'].value = options['start-minute'].value;                  
+      }      
+      else if(options['start-hour'].value==options['end-hour'].value && options['start-minute'].value > options['end-minute'].value ) {
+        options['end-minute'].value = options['start-minute'].value;            
+      }
+      status.html('End time Saved')
+      localStorage['start-minute'] = options['start-minute'].value;          
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    })
+
+    jQuery('#end-minute').change(function(){
+      var status = $('#status')
+      if(options['start-hour'].value==options['end-hour'].value && options['end-minute'].value >= options['start-minute'].value  ) {
+        status.html('End time Saved')
+        localStorage['end-minute'] = options['end-minute'].value;          
+    } else {
+        options['end-minute'].value = options['start-minute'].value
+        status.html('I can\'t do that !')
+    }
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    })        
+  };
+</script>
+<h1>
+  <img src="icon/64.png" alt="Toast">
+  BaseCamp Notification 
+</h1>
+<h2>Options</h2>
+<form id="options">
+  <input type="checkbox" name="isActivated" checked>
+  Display a notification every
+  <select name="frequency">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>5</option>
+    <option>10</option>
+    <option>15</option>
+    <option>20</option>
+    <option>25</option>
+    <option>30</option>
+  </select> <br>
+  Start : 
+  <select name="start-hour" id="start-hour">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>5</option>
+    <option>6</option>
+    <option>7</option>
+    <option>8</option>
+    <option>9</option>
+    <option>10</option>
+    <option>11</option>
+    <option>12</option>        
+  </select> :
+  <select name="start-minute" id="start-minute">
+    <option>1</option>
+    <option>5</option>
+    <option>10</option>
+    <option>15</option>
+    <option>20</option>
+    <option>30</option>
+    <option>45</option>
+    <option>59</option>    
+  </select>
+  <select name="period" id='period'>
+    <option>a.m.</option>
+    <option>p.m.</option>
+  </select>
+  <br>
+  End : 
+  <select name="end-hour" id="end-hour">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>5</option>
+    <option>6</option>
+    <option>7</option>
+    <option>8</option>
+    <option>9</option>
+    <option>10</option>
+    <option>11</option>
+    <option>12</option>        
+  </select> :
+  <select name="end-minute" id="end-minute">
+    <option>1</option>
+    <option>5</option>
+    <option>10</option>
+    <option>15</option>
+    <option>20</option>
+    <option>30</option>
+    <option>45</option>
+    <option>59</option>    
+  </select> 
+  <select name="period-end" id="period-end">
+    <option>a.m.</option>
+    <option>p.m.</option>
+  </select>
+  <!-- <br>  
+   Message <input type="text" name="some_name" value="" id="some_name" disabled>
+   minute(s). -->
+</form>
+<div id="status">
+  
+</div>
