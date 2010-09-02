@@ -1,4 +1,3 @@
-
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script>
@@ -38,14 +37,11 @@
     var interval = 0; // The display interval, in minutes.
     setInterval(function() {
       interval++;
-      if (
-        JSON.parse(localStorage.isActivated) &&
-          localStorage.frequency <= interval
-      ) {
+      if ( JSON.parse(localStorage.isActivated) && localStorage.frequency <= interval) {
         selectiveShow();
         interval = 0;
       }
-    }, 60000);
+    }, 30000);
   } else {
     // Show a new tab with an error message.
     chrome.tabs.create({url: 'error.html'});
