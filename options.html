@@ -89,7 +89,7 @@
     jQuery('#start-minute').change(function(){
       var status = $('#status')
       localStorage['end-minute'] = localStorage['start-minute'] = options['start-minute'].value;          
-     localStorage['end-minute'] = parseInt(localStorage['end-minute'])+10; 
+      localStorage['end-minute'] = parseInt(localStorage['end-minute'])+10; 
       status.html('End time Saved')
       setTimeout(function() {
         status.html('')
@@ -97,55 +97,54 @@
     })
   };
 </script>
-<h1>
-  <img src="icon/64.png" alt="Toast">
-  BaseCamp Notification 
-</h1>
 <h2>Options</h2>
-<form id="options">
-  <input type="checkbox" name="isActivated" checked>
-  Display a notification every
-  <select name="frequency">
-    <option>1</option>
-    <option>2</option>
-    <option>3</option>
-    <option>4</option>
-    <option>5</option>
-    <option>10</option>
-    <option>15</option>
-    <option>20</option>
-    <option>30</option>
-    <option>45</option>
-  </select> <br>
-  Start : 
-  <select name="start-hour" id="start-hour">
-    <option>1</option>
-    <option>2</option>
-    <option>3</option>
-    <option>4</option>
-    <option>5</option>
-    <option>6</option>
-    <option>7</option>
-    <option>8</option>
-    <option>9</option>
-    <option>10</option>
-    <option>11</option>
-    <option>12</option>        
-  </select> :
-  <select name="start-minute" id="start-minute">
-    <option>1</option>
-    <option>5</option>
-    <option>10</option>
-    <option>15</option>
-    <option>20</option>
-    <option>30</option>
-    <option>45</option>
-    <option>59</option>    
-  </select>
-  <select name="period" id='period'>
-    <option>a.m.</option>
-    <option>p.m.</option>
-  </select>
+<div id="time_options">  
+  <form id="options">
+    <input type="checkbox" name="isActivated" checked>
+    Display a notification every
+    <select name="frequency">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>  
+      <option>10</option>
+      <option>15</option>
+      <option>20</option>
+      <option>30</option>
+      <option>45</option>
+    </select> <br>
+    Start : 
+    <select name="start-hour" id="start-hour">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+      <option>11</option>
+      <option>12</option>        
+    </select> :
+    <select name="start-minute" id="start-minute">
+      <option>1</option>
+      <option>5</option>
+      <option>10</option>
+      <option>15</option>
+      <option>20</option>
+      <option>30</option>
+      <option>45</option>
+      <option>59</option>    
+    </select>
+    <select name="period" id='period'>
+      <option>a.m.</option>
+      <option>p.m.</option>
+    </select>
+</div>  
+  
   <br>
 
 </form>
