@@ -8,7 +8,7 @@
 
   Brian Kennish <bkennish@chromium.org>
 -->
-<title>Notification Demo</title>
+<title>Opendream notifier</title>
 <style>
   /* Clone the look and feel of "chrome://" pages. */
   body {
@@ -48,8 +48,8 @@
                                            // The display activation.
     options.frequency.value = localStorage.frequency;
                                            // The display frequency, in minutes.
-    options['start-hour'].value = localStorage['start-hour'];                                           
-    options['start-minute'].value = localStorage['start-minute'];                                           
+    options['hour-marker'].value = localStorage['hour-marker'];                                           
+    options['minute-marker'].value = localStorage['minute-marker'];                                           
     options.period.value = localStorage['period'];
 
     if (!options.isActivated.checked) { ghost(true); }
@@ -68,7 +68,24 @@
       }, 1000);
     };
     
-    jQuery('#period').change(function() {
+    $('#hour-marker').change(function(){
+      var status = $('#status')
+      status.html('Start time Saved')
+      localStorage['hour-marker'] = options['hour-marker'].value;
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    })
+    $('#minute-marker').change(function(){
+      var status = $('#status')
+      localStorage['minute-marker'] = options['minute-marker'].value;          
+      status.html('End time Saved')
+      setTimeout(function() {
+        status.html('')
+      }, 1000);
+    })
+
+    $('#period').change(function() {
       var status = $('#status')
       status.html('Period of time saved')
       localStorage['period'] = options.period.value  
@@ -78,23 +95,6 @@
       }, 1000);
     })
     
-    jQuery('#start-hour').change(function(){
-      var status = $('#status')
-      status.html('Start time Saved')
-      localStorage['end-hour'] =  localStorage['start-hour'] = options['start-hour'].value;
-      setTimeout(function() {
-        status.html('')
-      }, 1000);
-    })
-    jQuery('#start-minute').change(function(){
-      var status = $('#status')
-      localStorage['end-minute'] = localStorage['start-minute'] = options['start-minute'].value;          
-      localStorage['end-minute'] = parseInt(localStorage['end-minute'])+10; 
-      status.html('End time Saved')
-      setTimeout(function() {
-        status.html('')
-      }, 1000);
-    })
   };
 </script>
 <h2>Options</h2>
@@ -115,7 +115,7 @@
       <option>45</option>
     </select> <br>
     Start : 
-    <select name="start-hour" id="start-hour">
+    <select name="hour-marker" id="hour-marker">
       <option>1</option>
       <option>2</option>
       <option>3</option>
@@ -129,7 +129,7 @@
       <option>11</option>
       <option>12</option>        
     </select> :
-    <select name="start-minute" id="start-minute">
+    <select name="minute-marker" id="minute-marker">
       <option>1</option>
       <option>5</option>
       <option>10</option>

@@ -7,17 +7,9 @@
     "webkitNotifications.requestPermission" beforehand).
   */
   
-  
-/*
-  var i = 0;
-  window.setInterval(function() {
-    chrome.browserAction.setBadgeText({text:String(i)});
-    i+=1;
-  }, 1000);
-*/
-  
   var time,hour,period;
   var counter_flag=false;
+  var interval_pointer=null;
   function show() {
     var notification = webkitNotifications.createNotification(
       'icon/48.png',                      // The image.
@@ -26,48 +18,50 @@
     );
     notification.show();
   }
+  
   var selectiveShow = function() {
     time = /(..)(:..)/(Date());              // The prettyprinted time.
     hour = time[1] % 12 || 12;               // The prettyprinted hour.
     period = time[1] < 12 ? 'a.m.' : 'p.m.'; // The period of the day.
     minute=time[2].substr(1);
-    var diff_hour = parseInt(localStorage['end-hour']) - hour;
-    var diff_min = parseInt(localStorage['end-minute']) - minute;
-        
-    if(period==localStorage['period'] && hour >= localStorage['start-hour'] && hour  <=localStorage['end-hour'] && minute <= localStorage['end-minute'] && minute>=localStorage['start-minute'] ) {
+    var period_condition = (period==localStorage['period']);
+    var hour_condition = (hour == localStorage['hour-marker']);
+    var minute_condition = (minute>=localStorage['minute-marker']);
+    var diff_hour = parseInt(localStorage['hour-marker']) - hour;
+    var diff_min = parseInt(localStorage['minute-marker']) - minute;
+    var less_hour = (hour <= localStorage['hour-marker']);    
+    chrome.browserAction.setBadgeText({text:String(localStorage['hour-marker'])});
+    if (period_condition && hour_condition & minute_condition) {
       show(); 
-    
+      clearInterval(interval_pointer);
+      counter_flag = false;
+    } 
+    else if (period_condition && diff_hour <= 3 && counter_flag==false) {
+      counter_flag=true;
+      var remain_sec = diff_hour*3600 + ((diff_min*60) || 60);
+      countdown(remain_sec);
+      chrome.browserAction.setBadgeText({text:String(remain_sec)}); 
     }
-    chrome.browserAction.setBadgeBackgroundColor({color:[25, 200, 0, 100]});
-    if(period==localStorage['period'] && hour <= localStorage['end-hour'] && minute <= localStorage['end-minute'] ) {
-      if(diff_hour >= 0 && diff_hour <= 1 && counter_flag == false) {
-        var remain_sec = diff_hour*3600 + ((diff_min*60) || 60);
-        countdown(remain_sec);
-      }
-    } else {
-      chrome.browserAction.setBadgeText({text:String('No, I dont')});      
-    }
+    else {
+    }  
+  }
     
 function countdown(start) {
   var i = start;
-  window.setInterval(function() {
+  interval_pointer = setInterval(function() {
     chrome.browserAction.setBadgeText({text:String(i)});
     --i;
   }, 1000);
-}    
-  }
+}
   // Conditionally initialize the options.
   if (!localStorage.isInitialized) {
     localStorage.isActivated = true;   // The display activation.
     localStorage.frequency = 15;        // The display frequency, in minutes.
     localStorage.isInitialized = true; // The option initialization.
-    localStorage['start-hour'] = 5
-    localStorage['start-minute'] = 1
-    localStorage['end-hour'] = 5
-    localStorage['end-minute'] = 59
+    localStorage['hour-marker'] = 5
+    localStorage['minute-marker'] = 1
     localStorage['period'] = 'p.m.'
   }
-
   // Test for notification support.
   if (webkitNotifications) {
     // While activated, show notifications at the display frequency.
