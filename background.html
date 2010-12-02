@@ -33,8 +33,6 @@
     chrome.browserAction.setBadgeText({text:String(localStorage['hour-marker'])});
     if (period_condition && hour_condition & minute_condition) {
       show(); 
-      clearInterval(interval_pointer);
-      counter_flag = false;
     } 
     else if (period_condition && diff_hour <= 3 && counter_flag==false) {
       counter_flag=true;
@@ -42,6 +40,10 @@
       countdown(remain_sec);
       chrome.browserAction.setBadgeText({text:String(remain_sec)}); 
     }
+    else if (diff_hour > 3 && counter_flag==true) {
+      clearInterval(interval_pointer);
+      counter_flag = false;
+    }    
     else {
     }  
   }
