@@ -5,19 +5,17 @@
     Displays a notification with the current time. Requires "notifications"
     permission in the manifest file (or calling
     "webkitNotifications.requestPermission" beforehand).
-  */
-  
-  
+  */ 
 /*
   var i = 0;
   window.setInterval(function() {
     chrome.browserAction.setBadgeText({text:String(i)});
     i+=1;
   }, 1000);
-*/
-  
+*/ 
   var time,hour,period;
   var counter_flag=false;
+
   function show() {
     var notification = webkitNotifications.createNotification(
       'icon/48.png',                      // The image.
@@ -34,28 +32,34 @@
     var diff_hour = parseInt(localStorage['end-hour']) - hour;
     var diff_min = parseInt(localStorage['end-minute']) - minute;
         
-    if(period==localStorage['period'] && hour >= localStorage['start-hour'] && hour  <=localStorage['end-hour'] && minute <= localStorage['end-minute'] && minute>=localStorage['start-minute'] ) {
-      show(); 
-    
+    if (period==localStorage['period'] && 
+				hour >= localStorage['start-hour'] && 
+				hour <=localStorage['end-hour'] && 
+				minute <= localStorage['end-minute'] && minute>=localStorage['start-minute']) { 
+					show(); 
     }
+
     chrome.browserAction.setBadgeBackgroundColor({color:[25, 200, 0, 100]});
-    if(period==localStorage['period'] && hour <= localStorage['end-hour'] && minute <= localStorage['end-minute'] ) {
-      if(diff_hour >= 0 && diff_hour <= 1 && counter_flag == false) {
+
+    if (period==localStorage['period'] && hour <= localStorage['end-hour'] && minute <= localStorage['end-minute']) {
+      if (diff_hour >= 0 && diff_hour <= 1 && counter_flag == false) {
         var remain_sec = diff_hour*3600 + ((diff_min*60) || 60);
         countdown(remain_sec);
       }
-    } else {
+    } 
+		else {
       chrome.browserAction.setBadgeText({text:String('No, I dont')});      
     }
     
-function countdown(start) {
-  var i = start;
-  window.setInterval(function() {
-    chrome.browserAction.setBadgeText({text:String(i)});
-    --i;
-  }, 1000);
-}    
+		function countdown(start) {
+			var i = start;
+			window.setInterval(function() {
+				chrome.browserAction.setBadgeText({text:String(i)});
+				--i;
+			}, 1000);
+		}    
   }
+
   // Conditionally initialize the options.
   if (!localStorage.isInitialized) {
     localStorage.isActivated = true;   // The display activation.
@@ -66,12 +70,12 @@ function countdown(start) {
     localStorage['end-hour'] = 5
     localStorage['end-minute'] = 59
     localStorage['period'] = 'p.m.'
-  }
+  } 
 
   // Test for notification support.
   if (webkitNotifications) {
     // While activated, show notifications at the display frequency.
-    if(JSON.parse(localStorage.isActivated)) { 
+    if (JSON.parse(localStorage.isActivated)) { 
       selectiveShow();
       var interval = 0; // The display interval, in minutes.
       setInterval(
@@ -81,7 +85,8 @@ function countdown(start) {
             interval = 0;
           }
         }, 6000);
-    } else {
+    }
+		else {
       // Show a new tab with an error message.
       chrome.tabs.create({url: 'error.html'});
     }
